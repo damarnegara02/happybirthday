@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export default function BackgroundMusic() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(0.8); // Increased default volume
   const [isVisible, setIsVisible] = useState(true);
   const [melodyInterval, setMelodyInterval] = useState<NodeJS.Timeout | null>(null);
 
@@ -27,41 +27,108 @@ export default function BackgroundMusic() {
 
     const context = new (AudioContext || (window as any).webkitAudioContext)();
     
-    // Melody notes for "Happy Birthday" (simplified)
-    const notes = [
-      { freq: 262, duration: 500 }, // C
-      { freq: 262, duration: 250 }, // C
-      { freq: 294, duration: 750 }, // D
-      { freq: 262, duration: 750 }, // C
-      { freq: 349, duration: 750 }, // F
-      { freq: 330, duration: 1500 }, // E
+    // Complete "Happy Birthday" melody with harmonics for richer sound
+    const fullSong = [
+      // Happy Birthday to you
+      { freq: 262, duration: 400 }, // C - Hap
+      { freq: 262, duration: 200 }, // C - py
+      { freq: 294, duration: 600 }, // D - Birth
+      { freq: 262, duration: 600 }, // C - day
+      { freq: 349, duration: 600 }, // F - to
+      { freq: 330, duration: 1200 }, // E - you
       
-      { freq: 262, duration: 500 }, // C
-      { freq: 262, duration: 250 }, // C
-      { freq: 294, duration: 750 }, // D
-      { freq: 262, duration: 750 }, // C
-      { freq: 392, duration: 750 }, // G
-      { freq: 349, duration: 1500 }, // F
+      // Happy Birthday to you  
+      { freq: 262, duration: 400 }, // C - Hap
+      { freq: 262, duration: 200 }, // C - py
+      { freq: 294, duration: 600 }, // D - Birth
+      { freq: 262, duration: 600 }, // C - day
+      { freq: 392, duration: 600 }, // G - to
+      { freq: 349, duration: 1200 }, // F - you
+      
+      // Happy Birthday dear [name]
+      { freq: 262, duration: 400 }, // C - Hap
+      { freq: 262, duration: 200 }, // C - py
+      { freq: 523, duration: 600 }, // C8 - Birth
+      { freq: 440, duration: 600 }, // A - day
+      { freq: 349, duration: 600 }, // F - dear
+      { freq: 330, duration: 600 }, // E - [name]
+      { freq: 294, duration: 1200 }, // D
+      
+      // Happy Birthday to you
+      { freq: 466, duration: 400 }, // Bb - Hap
+      { freq: 466, duration: 200 }, // Bb - py
+      { freq: 440, duration: 600 }, // A - Birth
+      { freq: 349, duration: 600 }, // F - day
+      { freq: 392, duration: 600 }, // G - to
+      { freq: 349, duration: 1200 }, // F - you
     ];
 
     let currentTime = context.currentTime;
     
-    notes.forEach((note, index) => {
-      const oscillator = context.createOscillator();
-      const gainNode = context.createGain();
+    fullSong.forEach((note, index) => {
+      // Create multiple oscillators for fuller sound
+      const mainOsc = context.createOscillator();
+      const mainGain = context.createGain();
       
-      oscillator.connect(gainNode);
-      gainNode.connect(context.destination);
+      const harmonicOsc = context.createOscillator();
+      const harmonicGain = context.createGain();
       
-      oscillator.frequency.value = note.freq;
-      oscillator.type = 'sine';
+      const bassOsc = context.createOscillator();
+      const bassGain = context.createGain();
       
-      gainNode.gain.setValueAtTime(0, currentTime);
-      gainNode.gain.linearRampToValueAtTime(volume * 0.3, currentTime + 0.01);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + note.duration / 1000);
+      // Connect all oscillators
+      mainOsc.connect(mainGain);
+      mainGain.connect(context.destination);
       
-      oscillator.start(currentTime);
-      oscillator.stop(currentTime + note.duration / 1000);
+      harmonicOsc.connect(harmonicGain);
+      harmonicGain.connect(context.destination);
+      
+      bassOsc.connect(bassGain);
+      bassGain.connect(context.destination);
+      
+      // Set frequencies for richer harmonics
+      mainOsc.frequency.value = note.freq;
+      harmonicOsc.frequency.value = note.freq * 2; // Octave
+      bassOsc.frequency.value = note.freq / 2; // Sub-octave for bass
+      
+      // Different waveforms for texture
+      mainOsc.type = 'sine';
+      harmonicOsc.type = 'triangle';
+      bassOsc.type = 'square';
+      
+      // Volume levels - significantly louder overall
+      const mainVolume = volume * 1.0; // Full volume for main note
+      const harmonicVolume = volume * 0.4; // Harmonic support
+      const bassVolume = volume * 0.3; // Bass foundation
+      
+      // Main note
+      mainGain.gain.setValueAtTime(0, currentTime);
+      mainGain.gain.linearRampToValueAtTime(mainVolume, currentTime + 0.02);
+      mainGain.gain.exponentialRampToValueAtTime(0.001, currentTime + note.duration / 1000);
+      
+      // Harmonic
+      harmonicGain.gain.setValueAtTime(0, currentTime);
+      harmonicGain.gain.linearRampToValueAtTime(harmonicVolume, currentTime + 0.02);
+      harmonicGain.gain.exponentialRampToValueAtTime(0.001, currentTime + note.duration / 1000);
+      
+      // Bass (only for lower notes)
+      if (note.freq <= 350) {
+        bassGain.gain.setValueAtTime(0, currentTime);
+        bassGain.gain.linearRampToValueAtTime(bassVolume, currentTime + 0.02);
+        bassGain.gain.exponentialRampToValueAtTime(0.001, currentTime + note.duration / 1000);
+      }
+      
+      // Start all oscillators
+      mainOsc.start(currentTime);
+      mainOsc.stop(currentTime + note.duration / 1000);
+      
+      harmonicOsc.start(currentTime);
+      harmonicOsc.stop(currentTime + note.duration / 1000);
+      
+      if (note.freq <= 350) {
+        bassOsc.start(currentTime);
+        bassOsc.stop(currentTime + note.duration / 1000);
+      }
       
       currentTime += note.duration / 1000;
     });
@@ -79,12 +146,12 @@ export default function BackgroundMusic() {
       if (!isMuted) {
         playBirthdayMelody();
       }
-      // Auto repeat melody every 8 seconds
+      // Auto repeat melody every 15 seconds (song is now longer)
       const interval = setInterval(() => {
         if (!isMuted) {
           playBirthdayMelody();
         }
-      }, 8000);
+      }, 15000);
       setMelodyInterval(interval);
     }
   };
@@ -181,15 +248,22 @@ export default function BackgroundMusic() {
       {/* Song Info */}
       <div className="mt-2 text-center">
         <p className="text-xs text-muted-foreground romantic-font">
-          🎂 Lagu Ulang Tahun Spesial
+          🎂 Happy Birthday - Full Song ✨
+        </p>
+        <p className="text-xs text-primary/70 mt-1">
+          {isPlaying ? "🔊 Berkualitas Tinggi" : "🎵 Klik untuk mulai"}
         </p>
         {isPlaying && (
           <div className="flex justify-center space-x-1 mt-1">
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="w-1 h-3 bg-primary rounded-full animate-pulse"
-                style={{ animationDelay: `${i * 0.2}s` }}
+                className="w-1 bg-gradient-to-t from-primary to-secondary rounded-full animate-pulse"
+                style={{ 
+                  height: `${Math.random() * 8 + 4}px`,
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: `${0.5 + Math.random() * 0.5}s`
+                }}
               />
             ))}
           </div>
