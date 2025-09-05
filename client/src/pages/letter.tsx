@@ -1,67 +1,128 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Mail } from "lucide-react";
+import { Heart, Mail, Sparkles, Star } from "lucide-react";
 import { Link } from "wouter";
 
 export default function Letter() {
   const [isOpened, setIsOpened] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [glowEffect, setGlowEffect] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGlowEffect(prev => !prev);
+    }, 2000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const openLetter = () => {
     setIsOpened(true);
     setTimeout(() => {
       setShowMessage(true);
-      createFloatingHearts();
-    }, 500);
+      createLoveExplosion();
+    }, 800);
   };
 
-  const createFloatingHearts = () => {
-    for (let i = 0; i < 10; i++) {
+  const createLoveExplosion = () => {
+    // Create multiple waves of romantic elements
+    for (let wave = 0; wave < 3; wave++) {
       setTimeout(() => {
-        const heart = document.createElement('div');
-        heart.innerHTML = '❤️';
-        heart.style.position = 'fixed';
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.top = '100vh';
-        heart.style.fontSize = Math.random() * 20 + 15 + 'px';
-        heart.style.zIndex = '1000';
-        heart.style.pointerEvents = 'none';
-        heart.style.animation = 'float 3s ease-out forwards';
-        
-        document.body.appendChild(heart);
-        
-        setTimeout(() => {
-          heart.remove();
-        }, 3000);
-      }, i * 200);
+        for (let i = 0; i < 15; i++) {
+          setTimeout(() => {
+            const element = document.createElement('div');
+            const emojis = ['❤️', '💕', '💖', '💝', '💗', '💓', '💘', '✨', '⭐', '🌟'];
+            element.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            element.style.position = 'fixed';
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.top = '100vh';
+            element.style.fontSize = Math.random() * 25 + 20 + 'px';
+            element.style.zIndex = '1000';
+            element.style.pointerEvents = 'none';
+            element.style.animation = `float ${3 + Math.random() * 2}s ease-out forwards`;
+            
+            document.body.appendChild(element);
+            
+            setTimeout(() => {
+              element.remove();
+            }, 5000);
+          }, i * 100);
+        }
+      }, wave * 800);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
-      <div className="max-w-2xl mx-auto text-center">
-        <h1 className="romantic-font text-5xl md:text-6xl font-bold gradient-text mb-8">
-          Surat Cinta Untukmu
-        </h1>
-        <p className="text-xl text-muted-foreground mb-12">
+    <div className="min-h-screen flex items-center justify-center px-6 animate-page-enter relative">
+      {/* Romantic background elements */}
+      <div className="fixed inset-0 pointer-events-none z-[1]">
+        <Sparkles className="absolute top-20 left-10 text-yellow-400 animate-twinkle w-6 h-6" />
+        <Heart className="absolute top-40 right-20 text-pink-400 animate-heartbeat w-8 h-8" />
+        <Star className="absolute bottom-32 left-20 text-purple-400 animate-wiggle w-5 h-5" />
+        <Sparkles className="absolute bottom-20 right-10 text-yellow-400 animate-twinkle w-7 h-7" />
+      </div>
+
+      <div className="max-w-2xl mx-auto text-center relative z-10">
+        <div className="relative mb-8">
+          <h1 className="romantic-font text-5xl md:text-6xl font-bold gradient-text mb-4 hover:animate-love-pulse cursor-default">
+            Surat Cinta Untukmu
+          </h1>
+          <div className="absolute -top-4 -right-8">
+            <Mail className="text-primary/40 animate-wiggle w-8 h-8" />
+          </div>
+        </div>
+        
+        <p className="text-xl text-muted-foreground mb-12 hover:text-primary transition-colors duration-500 animate-fadeIn" style={{ animationDelay: '0.3s' }}>
           Klik amplop di bawah untuk membaca surat spesial dariku 💌
         </p>
 
-        {/* Envelope Animation */}
+        {/* Enhanced Envelope Animation */}
         <div 
-          className={`envelope mx-auto w-80 h-60 relative mb-8 cursor-pointer transition-transform duration-300 hover:scale-105 ${isOpened ? 'opened' : ''}`}
+          className={`envelope mx-auto w-80 h-60 relative mb-8 cursor-pointer transition-all duration-500 hover:scale-110 ${
+            isOpened ? 'opened' : 'romantic-hover'
+          } ${glowEffect && !isOpened ? 'animate-romantic-glow' : ''}`}
           onClick={openLetter}
           data-testid="envelope"
+          style={{ animationDelay: '0.6s' }}
         >
-          <div className="w-full h-full bg-gradient-to-br from-primary to-secondary rounded-lg shadow-2xl flex items-center justify-center relative">
-            <div className="envelope-flap absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-accent to-primary rounded-t-lg border-b-2 border-primary-foreground/20 flex items-end justify-center pb-4">
-              <Heart className="w-8 h-8 text-primary-foreground" />
+          <div className="w-full h-full bg-gradient-to-br from-primary via-pink-500 to-secondary rounded-lg shadow-2xl flex items-center justify-center relative overflow-hidden">
+            {/* Decorative elements on envelope */}
+            <div className="absolute top-2 left-2">
+              <Heart className="w-4 h-4 text-primary-foreground/60 animate-heartbeat" />
             </div>
-            <div className="text-primary-foreground text-center">
-              <Mail className="w-16 h-16 mx-auto mb-2" />
-              <p className="romantic-font text-xl">Untuk: Kamu ❤️</p>
+            <div className="absolute bottom-2 right-2">
+              <Sparkles className="w-5 h-5 text-yellow-300 animate-twinkle" />
             </div>
+            
+            {/* Enhanced envelope flap */}
+            <div className="envelope-flap absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-accent via-pink-400 to-primary rounded-t-lg border-b-2 border-primary-foreground/20 flex items-end justify-center pb-4 transition-all duration-500">
+              <Heart className={`w-8 h-8 text-primary-foreground transition-all duration-300 ${!isOpened ? 'animate-love-pulse' : ''}`} />
+            </div>
+            
+            {/* Main envelope content */}
+            <div className="text-primary-foreground text-center relative z-10">
+              <Mail className="w-16 h-16 mx-auto mb-2 animate-float" />
+              <p className="romantic-font text-xl hover:scale-105 transition-transform duration-300">Untuk: Kamu ❤️</p>
+              {!isOpened && (
+                <div className="mt-2 flex justify-center space-x-1">
+                  {['💕', '✨', '💖'].map((emoji, i) => (
+                    <span 
+                      key={i} 
+                      className="animate-bounce text-lg"
+                      style={{ animationDelay: `${i * 0.2}s` }}
+                    >
+                      {emoji}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Shimmer effect */}
+            {!isOpened && (
+              <div className="absolute inset-0 opacity-30 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-slideIn"></div>
+            )}
           </div>
         </div>
 
