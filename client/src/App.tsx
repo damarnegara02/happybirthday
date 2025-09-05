@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navigation from "@/components/navigation";
 import FloatingHearts from "@/components/floating-hearts";
 import SparkleEffect from "@/components/sparkle-effect";
+import BackgroundMusic from "@/components/background-music";
 import Home from "@/pages/home";
 import Memories from "@/pages/memories";
 import Gallery from "@/pages/gallery";
@@ -31,6 +32,7 @@ function App() {
         <div className="min-h-screen relative">
           <FloatingHearts />
           <Navigation />
+          <BackgroundMusic />
           <main className="relative z-10">
             <Router />
           </main>

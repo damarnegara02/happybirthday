@@ -269,4 +269,50 @@
   .heart-beat-hover:hover {
     animation: heartbeat 0.8s ease-in-out;
   }
+
+  /* Custom slider styles */
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.8);
+  }
+
+  .slider::-webkit-slider-track {
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary)/30 100%);
+  }
+
+  .slider::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.8);
+  }
+
+  .slider::-moz-range-track {
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--primary)/30 100%);
+    border: none;
+  }
 }
