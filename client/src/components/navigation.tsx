@@ -14,18 +14,18 @@ export default function Navigation() {
   ];
 
   const createFloatingHeart = (e: React.MouseEvent) => {
-    const heart = document.createElement('div');
-    heart.innerHTML = '💖';
-    heart.style.position = 'fixed';
-    heart.style.left = e.clientX + 'px';
-    heart.style.top = e.clientY + 'px';
-    heart.style.fontSize = '20px';
-    heart.style.zIndex = '1002';
-    heart.style.pointerEvents = 'none';
-    heart.style.animation = 'float 2s ease-out forwards';
-    
+    const heart = document.createElement("div");
+    heart.innerHTML = "💖";
+    heart.style.position = "fixed";
+    heart.style.left = e.clientX + "px";
+    heart.style.top = e.clientY + "px";
+    heart.style.fontSize = "20px";
+    heart.style.zIndex = "1002";
+    heart.style.pointerEvents = "none";
+    heart.style.animation = "float 2s ease-out forwards";
+
     document.body.appendChild(heart);
-    
+
     setTimeout(() => {
       heart.remove();
     }, 2000);
@@ -34,7 +34,7 @@ export default function Navigation() {
   return (
     <nav className="navbar fixed top-0 left-0 right-0 z-50 px-6 py-4 animate-slideIn">
       <div className="max-w-4xl mx-auto flex justify-between items-center">
-        <Link 
+        <Link
           href="/"
           className="romantic-font text-2xl font-bold gradient-text hover:scale-110 transition-transform duration-300 animate-heartbeat"
           onMouseEnter={(e) => createFloatingHeart(e)}
@@ -45,7 +45,7 @@ export default function Navigation() {
           {navItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = location === item.path;
-            
+
             return (
               <Link
                 key={item.path}
@@ -61,9 +61,11 @@ export default function Navigation() {
                 onMouseLeave={() => setHoveredItem(null)}
                 onClick={(e) => createFloatingHeart(e)}
               >
-                <Icon className={`w-5 h-5 transition-all duration-300 ${
-                  hoveredItem === item.path ? 'animate-bounce' : ''
-                }`} />
+                <Icon
+                  className={`w-5 h-5 transition-all duration-300 ${
+                    hoveredItem === item.path ? "animate-bounce" : ""
+                  }`}
+                />
                 <span className="relative z-10">{item.label}</span>
                 {/* Romantic shimmer effect */}
                 <div className="absolute inset-0 -top-[200%] opacity-0 group-hover:opacity-100 group-hover:top-[200%] transition-all duration-1000 bg-gradient-to-b from-transparent via-white/20 to-transparent transform rotate-12"></div>
