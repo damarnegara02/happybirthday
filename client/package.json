@@ -2,6 +2,7 @@
   "name": "client",
   "version": "1.0.0",
   "private": true,
+<<<<<<< HEAD
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,5 +18,15 @@
     "typescript": "^5.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0"
+=======
+  "engines": {
+    "node": "18.16.0",
+    "npm": "9.x"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+>>>>>>> 7fa1a4f (fix: add Netlify config and Node engines)
   }
 }
