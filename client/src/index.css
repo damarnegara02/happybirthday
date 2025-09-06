@@ -3,6 +3,26 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  width: 100%;
+  overflow-x: hidden; /* cegah scroll horizontal */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  max-width: 100%;
+  padding: 1rem;
+}
+
+
 :root {
   --background: hsl(15, 40%, 97%);
   --foreground: hsl(340, 50%, 20%);

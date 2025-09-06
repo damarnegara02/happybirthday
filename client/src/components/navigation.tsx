@@ -1,10 +1,11 @@
-import { Home, Heart, Images, Mail } from "lucide-react";
+import { Home, Heart, Images, Mail, Menu, X } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 
 export default function Navigation() {
   const [location] = useLocation();
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navItems = [
     { path: "/", label: "Home", icon: Home },
@@ -32,16 +33,31 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="navbar fixed top-0 left-0 right-0 z-50 px-6 py-4 animate-slideIn">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-4 bg-white/80 backdrop-blur-md shadow-md animate-slideIn">
       <div className="max-w-4xl mx-auto flex justify-between items-center">
+        {/* Logo */}
         <Link
           href="/"
-          className="romantic-font text-2xl font-bold gradient-text hover:scale-110 transition-transform duration-300 animate-heartbeat"
+          className="romantic-font text-xl sm:text-2xl font-bold gradient-text hover:scale-110 transition-transform duration-300 animate-heartbeat"
           onMouseEnter={(e) => createFloatingHeart(e)}
         >
           Untuk Kamu ❤️
         </Link>
-        <div className="flex gap-4">
+
+        {/* Burger button (mobile) */}
+        <button
+          className="sm:hidden p-2 text-primary"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Nav items */}
+        <div
+          className={`flex-col sm:flex-row gap-2 sm:gap-4 sm:flex ${
+            menuOpen ? "flex absolute top-full left-0 w-full bg-white/90 p-4 shadow-md" : "hidden sm:flex"
+          }`}
+        >
           {navItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = location === item.path;
@@ -50,16 +66,19 @@ export default function Navigation() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`nav-btn px-6 py-3 rounded-full transition-all duration-500 flex items-center gap-2 relative overflow-hidden group ${
+                className={`nav-btn px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all duration-500 flex items-center gap-2 relative overflow-hidden group ${
                   isActive
                     ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg animate-pulse"
-                    : "bg-primary/10 text-primary hover:bg-gradient-to-r hover:from-primary hover:to-secondary hover:text-primary-foreground hover:shadow-xl hover:scale-110"
+                    : "bg-primary/10 text-primary hover:bg-gradient-to-r hover:from-primary hover:to-secondary hover:text-primary-foreground hover:shadow-xl hover:scale-105"
                 }`}
                 style={{ animationDelay: `${index * 0.1}s` }}
                 data-testid={`nav-${item.label.toLowerCase()}`}
                 onMouseEnter={() => setHoveredItem(item.path)}
                 onMouseLeave={() => setHoveredItem(null)}
-                onClick={(e) => createFloatingHeart(e)}
+                onClick={(e) => {
+                  createFloatingHeart(e);
+                  setMenuOpen(false); // close menu when clicked
+                }}
               >
                 <Icon
                   className={`w-5 h-5 transition-all duration-300 ${
