@@ -14,7 +14,7 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true,
     rollupOptions: {
-      external: ["@tanstack/react-query"], // tambahkan module ini agar tidak dibundle
-    },
+      external: ["@tanstack/react-query", "lucide-react"]
+    }
   },
 })
